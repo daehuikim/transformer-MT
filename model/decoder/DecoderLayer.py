@@ -1,6 +1,17 @@
 import torch.nn as nn
 from Utils import clones, SublayerConnection
 
+"""
+params explanation
+size => dimension of model
+self_attn => self attention
+src_attn => source attention
+feed_forward => feed forward
+dropout => dropout rate
+
+function explanation
+forward => return normalized input
+"""
 class DecoderLayer(nn.Module):
 
     def __init__(self, size, self_attn, src_attn, feed_forward, dropout):

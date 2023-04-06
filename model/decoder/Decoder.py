@@ -1,6 +1,14 @@
 import torch.nn as nn
 from Utils import clones, LayerNorm
 
+"""
+params explanation
+layer => DecoderLayer
+N => number of layers
+
+function explanation
+forward => return normalized input
+"""
 class Decoder(nn.Module):
 
     def __init__(self, layer, N):

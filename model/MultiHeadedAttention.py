@@ -3,6 +3,15 @@ import torch
 import math
 from Utils import clones
 
+"""
+params explanation
+h => number of heads
+d_model => dimension of model
+droupout => dropout rate
+
+function explanation
+forward => return normalized input
+"""
 class MultiHeadedAttention(nn.Module):
     def __init__(self, h, d_model, droupout = 0.1) -> None:
         super(MultiHeadedAttention, self).__init__()
@@ -41,7 +50,9 @@ class MultiHeadedAttention(nn.Module):
         return self.linears[-1](x)
 
 
-
+"""
+return attention score with softmax
+"""
 def attention(query,key,value, mask=None, dropout=None):
     d_k = query.size(-1)
     attention_score = torch.matmul(query,key.transpose(-2,-1)) / math.sqrt(d_k)

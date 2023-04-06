@@ -63,7 +63,9 @@ class EncoderDecoder(nn.Module):
                            tgt_mask
                            )
 
-
+"""
+return subsequent masking
+"""
 def subsequent_mask(size):
     shape = (1,size,size)
     mask = torch.triu(torch.ones(shape), diagonal=1).type(torch.uint8)

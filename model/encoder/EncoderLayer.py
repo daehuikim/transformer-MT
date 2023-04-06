@@ -1,6 +1,16 @@
 import torch.nn as nn
 from Utils import clones, SublayerConnection
 
+"""
+params explanation
+size => dimension of model
+self_attention => self attention
+feed_forward => feed forward
+dropout => dropout rate
+
+function explanation
+forward => return normalized input
+"""
 class EncoderLayer(nn.Module):
     def __init__(self, size, self_attention, feed_forward, dropout) -> None:
         super(EncoderLayer, self).__init__()
