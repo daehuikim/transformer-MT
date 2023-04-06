@@ -1,6 +1,6 @@
 # Edited by: daehuiKim
-
 import torch.nn as nn
+import torch
 
 # Most High level architecture
 class EncoderDecoder(nn.Module):
@@ -8,6 +8,11 @@ class EncoderDecoder(nn.Module):
     Params explanation
     encoder,decoder,generator => part in fig
     src_embed, tgt_embed = > input of encoder(embeded), output of encoder(embeded)
+
+    function explanation
+    encode => return context vector
+    decode => return output
+    forward => return output
     """
     def __init__(self, encoder, decoder, src_embed, tgt_embed, generator) -> None:
         super(EncoderDecoder, self).__init__()
@@ -57,4 +62,9 @@ class EncoderDecoder(nn.Module):
                            tgt,
                            tgt_mask
                            )
-    
+
+
+def subsequent_mask(size):
+    shape = (1,size,size)
+    mask = torch.triu(torch.ones(shape), diagonal=1).type(torch.uint8)
+    return mask == 0

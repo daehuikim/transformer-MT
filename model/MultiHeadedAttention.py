@@ -1,0 +1,52 @@
+import torch.nn as nn
+import torch
+import math
+from Utils import clones
+
+class MultiHeadedAttention(nn.Module):
+    def __init__(self, h, d_model, droupout = 0.1) -> None:
+        super(MultiHeadedAttention, self).__init__()
+        assert d_model % h == 0
+        self.d_k = d_model // h
+        self.h = h
+        self.linears = clones(nn.Linear(d_model, d_model),4) #?
+        self.attention = None
+        self.dropout = nn.Dropout(p=droupout)
+    
+    def forward(self, query, key, value, mask=None):
+        if mask is not None:
+            mask = mask.unsqueeze(1)
+        nbatches = query.size(0)
+
+        # 1) Do all the linear projections in batch from d_model => h x d_k
+        query, key, value = [
+            lin(x).view(nbatches, -1, self.h, self.d_k).transpose(1, 2)
+            for lin, x in zip(self.linears, (query, key, value))
+        ]
+
+        # 2) Apply attention on all the projected vectors in batch.
+        x, self.attention = attention(
+            query, key, value, mask=mask, dropout=self.dropout
+        )
+
+        # 3) "Concat" using a view and apply a final linear.
+        x = (
+            x.transpose(1, 2)
+            .contiguous()
+            .view(nbatches, -1, self.h * self.d_k)
+        )
+        del query
+        del key
+        del value
+        return self.linears[-1](x)
+
+
+
+def attention(query,key,value, mask=None, dropout=None):
+    d_k = query.size(-1)
+    attention_score = torch.matmul(query,key.transpose(-2,-1)) / math.sqrt(d_k)
+    if mask is not None:
+        attention_score = attention_score.masked_fill(mask ==0, -1e9) #negative infinity를 넣어야 0이나옴
+    if dropout is not None:
+        distribution = dropout(distribution)
+    return torch.matmul(distribution,value), distribution
