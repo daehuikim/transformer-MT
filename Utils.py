@@ -52,3 +52,12 @@ N => number of layers
 def clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
+
+"""
+return subsequent masking
+"""
+def subsequent_mask(size):
+    shape = (1,size,size)
+    mask = torch.triu(torch.ones(shape), diagonal=1).type(torch.uint8)
+    return mask == 0
+
