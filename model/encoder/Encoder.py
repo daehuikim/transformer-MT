@@ -14,7 +14,7 @@ class Encoder(nn.Module):
 
     def __init__(self, layer, N) -> None:
         super(Encoder,self).__init__()
-        self.layer = clones(layer, N)
+        self.layers = clones(layer, N)
         self.norm = LayerNorm(layer.size)
 
     def forward(self, x, mask):

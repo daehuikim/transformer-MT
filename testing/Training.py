@@ -1,16 +1,16 @@
 import torch
-from model import ModelGen
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
-from trainning import LabelSmoothing,Train, SimpleLossCompute, Batch
-import Iterators,DataGen
+from . import Iterators,DataGen
 from torch.optim.lr_scheduler import LambdaLR
 import GPUtil
-import os
 import torch.multiprocessing as mp
 from os.path import exists
 from Utils import DummyOptimizer, DummyScheduler
-
+import os,sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from model import ModelGen
+from trainning import LabelSmoothing,Train, SimpleLossCompute, Batch
 
 
 def train_worker(
@@ -40,7 +40,7 @@ def train_worker(
         module = model.module
         is_main_process = gpu == 0
 
-    criterion = LabelSmoothing(
+    criterion = LabelSmoothing.LabelSmoothing(
         size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1
     )
     criterion.cuda(gpu)
@@ -75,9 +75,9 @@ def train_worker(
         model.train()
         print(f"[GPU{gpu}] Epoch {epoch} Training ====", flush=True)
         _, train_state = Train.run_epoch(
-            (Batch(b[0], b[1], pad_idx) for b in train_dataloader),
+            (Batch.Batch(b[0], b[1], pad_idx) for b in train_dataloader),
             model,
-            SimpleLossCompute(module.generator, criterion),
+            SimpleLossCompute.SimpleLossCompute(module.generator, criterion),
             optimizer,
             lr_scheduler,
             mode="train+log",
@@ -94,9 +94,9 @@ def train_worker(
         print(f"[GPU{gpu}] Epoch {epoch} Validation ====", flush=True)
         model.eval()
         sloss = Train.run_epoch(
-            (Batch(b[0], b[1], pad_idx) for b in valid_dataloader),
+            (Batch.Batch(b[0], b[1], pad_idx) for b in valid_dataloader),
             model,
-            SimpleLossCompute(module.generator, criterion),
+            SimpleLossCompute.SimpleLossCompute(module.generator, criterion),
             DummyOptimizer(),
             DummyScheduler(),
             mode="eval",
@@ -145,9 +145,9 @@ def load_trained_model():
         "file_prefix": "multi30k_model_",
     }
     model_path = "multi30k_model_final.pt"
+    spacy_de, spacy_en = DataGen.load_tokenizers()
+    vocab_src, vocab_tgt = DataGen.load_vocab(spacy_de, spacy_en)
     if not exists(model_path):
-        spacy_de, spacy_en = DataGen.load_tokenizers()
-        vocab_src, vocab_tgt = DataGen.load_vocab(spacy_de, spacy_en)
         train_model(vocab_src, vocab_tgt, spacy_de, spacy_en, config)
 
     model = ModelGen.make_model(len(vocab_src), len(vocab_tgt), N=6)

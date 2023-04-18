@@ -1,12 +1,7 @@
-import MultiHeadedAttention
-import PositionwiseFeedForward
-import PositionalEncoding
-import EncoderDecoder
-from encoder import Encoder, EncoderLayer
-from decoder import Decoder, DecoderLayer
+from . import MultiHeadedAttention,PositionalEncoding,PositionwiseFeedForward,EncoderDecoder,Generator,Embeddings
+from .encoder import Encoder, EncoderLayer
+from .decoder import Decoder, DecoderLayer
 import torch.nn as nn
-import Generator
-import Embeddings
 import copy
 
 
@@ -15,15 +10,15 @@ def make_model(
 ):
     "Helper: Construct a model from hyperparameters."
     c = copy.deepcopy
-    attn = MultiHeadedAttention(h, d_model)
-    ff = PositionwiseFeedForward(d_model, d_ff, dropout)
-    position = PositionalEncoding(d_model, dropout)
-    model = EncoderDecoder(
-        Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),
-        Decoder(DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), N),
-        nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
-        nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
-        Generator(d_model, tgt_vocab),
+    attn = MultiHeadedAttention.MultiHeadedAttention(h, d_model)
+    ff = PositionwiseFeedForward.PositionwiseFeedForward(d_model, d_ff, dropout)
+    position = PositionalEncoding.PositionalEncoding(d_model, dropout)
+    model = EncoderDecoder.EncoderDecoder(
+        Encoder.Encoder(EncoderLayer.EncoderLayer(d_model, c(attn), c(ff), dropout), N),
+        Decoder.Decoder(DecoderLayer.DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), N),
+        nn.Sequential(Embeddings.Embeddings(d_model, src_vocab), c(position)),
+        nn.Sequential(Embeddings.Embeddings(d_model, tgt_vocab), c(position)),
+        Generator.Generator(d_model, tgt_vocab),
     )
 
     # This was important from their code.

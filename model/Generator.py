@@ -11,7 +11,7 @@ vocab => vocabulary size
 function explanation
 forward => return normalized input
 """
-class Generator(nn.Mudule):
+class Generator(nn.Module):
     def __init__(self,d_model, vocab) -> None:
         super(Generator, self).__init__()
         self.proj = nn.Linear(d_model,vocab)

@@ -58,6 +58,7 @@ def attention(query,key,value, mask=None, dropout=None):
     attention_score = torch.matmul(query,key.transpose(-2,-1)) / math.sqrt(d_k)
     if mask is not None:
         attention_score = attention_score.masked_fill(mask ==0, -1e9) #negative infinity를 넣어야 0이나옴
+    distribution = attention_score.softmax(dim=-1)
     if dropout is not None:
         distribution = dropout(distribution)
     return torch.matmul(distribution,value), distribution

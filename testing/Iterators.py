@@ -1,7 +1,8 @@
 import torch
-from torchtext.data.functional import to_map_style_dataset, pad
+from torchtext.data.functional import to_map_style_dataset
+from torch.nn.functional import pad
 import torchtext.datasets as datasets
-from DataGen import tokenize
+from .  import DataGen
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
@@ -78,10 +79,10 @@ def create_dataloaders(
 ):
     # def create_dataloaders(batch_size=12000):
     def tokenize_de(text):
-        return tokenize(text, spacy_de)
+        return DataGen.tokenize(text, spacy_de)
 
     def tokenize_en(text):
-        return tokenize(text, spacy_en)
+        return DataGen.tokenize(text, spacy_en)
 
     def collate_fn(batch):
         return collate_batch(
