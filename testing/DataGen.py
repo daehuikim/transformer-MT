@@ -6,20 +6,21 @@ import torch
 import spacy
 
 def load_tokenizers():
+    source = "en_core_web_sm"
+    target = "de_core_news_sm"
+    try:
+        src = spacy.load(source)
+    except IOError:
+        os.system("python -m spacy download" + source)
+        src = spacy.load(source)
 
     try:
-        spacy_de = spacy.load("de_core_news_sm")
+        tgt = spacy.load(target)
     except IOError:
-        os.system("python -m spacy download de_core_news_sm")
-        spacy_de = spacy.load("de_core_news_sm")
+        os.system("python -m spacy download" + target)
+        tgt = spacy.load(target)
 
-    try:
-        spacy_en = spacy.load("en_core_web_sm")
-    except IOError:
-        os.system("python -m spacy download en_core_web_sm")
-        spacy_en = spacy.load("en_core_web_sm")
-
-    return spacy_de, spacy_en
+    return src, tgt
 
 def tokenize(text, tokenizer):
     return [tok.text for tok in tokenizer.tokenizer(text)]
@@ -29,25 +30,25 @@ def yield_tokens(data_iter, tokenizer, index):
     for from_to_tuple in data_iter:
         yield tokenizer(from_to_tuple[index])
 
-def build_vocabulary(spacy_de, spacy_en):
-    def tokenize_de(text):
-        return tokenize(text, spacy_de)
+def build_vocabulary(src, tgt):
+    def tokenize_srs(text):
+        return tokenize(text, src)
 
-    def tokenize_en(text):
-        return tokenize(text, spacy_en)
+    def tokenize_tgt(text):
+        return tokenize(text, tgt)
 
-    print("Building German Vocabulary ...")
+    print("Building Source Vocabulary ...")
     train, val, test = datasets.Multi30k(language_pair=("de", "en"))
     vocab_src = build_vocab_from_iterator(
-        yield_tokens(train + val + test, tokenize_de, index=0),
+        yield_tokens(train + val + test, tokenize_srs, index=0),
         min_freq=2,
         specials=["<s>", "</s>", "<blank>", "<unk>"],
     )
 
-    print("Building English Vocabulary ...")
+    print("Building Target Vocabulary ...")
     train, val, test = datasets.Multi30k(language_pair=("de", "en"))
     vocab_tgt = build_vocab_from_iterator(
-        yield_tokens(train + val + test, tokenize_en, index=1),
+        yield_tokens(train + val + test, tokenize_tgt, index=1),
         min_freq=2,
         specials=["<s>", "</s>", "<blank>", "<unk>"],
     )
@@ -58,9 +59,9 @@ def build_vocabulary(spacy_de, spacy_en):
     return vocab_src, vocab_tgt
 
 
-def load_vocab(spacy_de, spacy_en):
+def load_vocab(src, tgt):
     if not exists("vocab.pt"):
-        vocab_src, vocab_tgt = build_vocabulary(spacy_de, spacy_en)
+        vocab_src, vocab_tgt = build_vocabulary(src, tgt)
         torch.save((vocab_src, vocab_tgt), "vocab.pt")
     else:
         vocab_src, vocab_tgt = torch.load("vocab.pt")

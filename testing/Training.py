@@ -142,16 +142,16 @@ def load_trained_model():
         "base_lr": 1.0,
         "max_padding": 72,
         "warmup": 3000,
-        "file_prefix": "multi30k_model_",
+        "file_prefix": "en_to_de_model_",
     }
-    model_path = "multi30k_model_final.pt"
-    spacy_de, spacy_en = DataGen.load_tokenizers()
-    vocab_src, vocab_tgt = DataGen.load_vocab(spacy_de, spacy_en)
+    model_path = "en_to_de_model_final.pt"
+    src, tgt = DataGen.load_tokenizers()
+    vocab_src, vocab_tgt = DataGen.load_vocab(src, tgt)
     if not exists(model_path):
-        train_model(vocab_src, vocab_tgt, spacy_de, spacy_en, config)
+        train_model(vocab_src, vocab_tgt, src, tgt, config)
 
     model = ModelGen.make_model(len(vocab_src), len(vocab_tgt), N=6)
-    model.load_state_dict(torch.load("multi30k_model_final.pt"))
+    model.load_state_dict(torch.load(model_path))
     return model
 
 
