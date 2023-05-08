@@ -18,8 +18,8 @@ def train_worker(
     ngpus_per_node,
     vocab_src,
     vocab_tgt,
-    spacy_de,
-    spacy_en,
+    src,
+    tgt,
     config,
     is_distributed=False,
 ):
@@ -49,8 +49,8 @@ def train_worker(
         gpu,
         vocab_src,
         vocab_tgt,
-        spacy_de,
-        spacy_en,
+        src,
+        tgt,
         batch_size=config["batch_size"] // ngpus_per_node,
         max_padding=config["max_padding"],
         is_distributed=is_distributed,
@@ -108,7 +108,7 @@ def train_worker(
         file_path = "%sfinal.pt" % config["file_prefix"]
         torch.save(module.state_dict(), file_path)
         
-def train_distributed_model(vocab_src, vocab_tgt, spacy_de, spacy_en, config):
+def train_distributed_model(vocab_src, vocab_tgt, src, tgt, config):
 
     ngpus = torch.cuda.device_count()
     os.environ["MASTER_ADDR"] = "localhost"
@@ -118,18 +118,18 @@ def train_distributed_model(vocab_src, vocab_tgt, spacy_de, spacy_en, config):
     mp.spawn(
         train_worker,
         nprocs=ngpus,
-        args=(ngpus, vocab_src, vocab_tgt, spacy_de, spacy_en, config, True),
+        args=(ngpus, vocab_src, vocab_tgt, src, tgt, config, True),
     )
 
 
-def train_model(vocab_src, vocab_tgt, spacy_de, spacy_en, config):
+def train_model(vocab_src, vocab_tgt, src, tgt, config):
     if config["distributed"]:
         train_distributed_model(
-            vocab_src, vocab_tgt, spacy_de, spacy_en, config
+            vocab_src, vocab_tgt, src, tgt, config
         )
     else:
         train_worker(
-            0, 1, vocab_src, vocab_tgt, spacy_de, spacy_en, config, False
+            1, 1, vocab_src, vocab_tgt, src, tgt, config, False
         )
 
 

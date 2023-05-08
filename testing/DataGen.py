@@ -6,8 +6,15 @@ import torch
 import spacy
 
 def load_tokenizers():
-    source = "en_core_web_sm"
-    target = "de_core_news_sm"
+    
+    languageDirection = 0
+    if languageDirection == 0:
+        source = "en_core_web_sm"
+        target = "de_core_news_sm"
+    elif languageDirection==1:
+        source = "de_core_news_sm"
+        target = "en_core_web_sm"
+
     try:
         src = spacy.load(source)
     except IOError:
@@ -31,22 +38,28 @@ def yield_tokens(data_iter, tokenizer, index):
         yield tokenizer(from_to_tuple[index])
 
 def build_vocabulary(src, tgt):
-    def tokenize_srs(text):
+    languageDirection = 0
+    if languageDirection == 0:
+        language_pair=("en", "de")
+    elif languageDirection==1:
+        language_pair=("de", "en")
+    
+    def tokenize_src(text):
         return tokenize(text, src)
 
     def tokenize_tgt(text):
         return tokenize(text, tgt)
 
     print("Building Source Vocabulary ...")
-    train, val, test = datasets.Multi30k(language_pair=("de", "en"))
+    train, val, test = datasets.Multi30k(language_pair)
     vocab_src = build_vocab_from_iterator(
-        yield_tokens(train + val + test, tokenize_srs, index=0),
+        yield_tokens(train + val + test, tokenize_src, index=0),
         min_freq=2,
         specials=["<s>", "</s>", "<blank>", "<unk>"],
     )
 
     print("Building Target Vocabulary ...")
-    train, val, test = datasets.Multi30k(language_pair=("de", "en"))
+    train, val, test = datasets.Multi30k(language_pair)
     vocab_tgt = build_vocab_from_iterator(
         yield_tokens(train + val + test, tokenize_tgt, index=1),
         min_freq=2,
@@ -55,7 +68,6 @@ def build_vocabulary(src, tgt):
 
     vocab_src.set_default_index(vocab_src["<unk>"])
     vocab_tgt.set_default_index(vocab_tgt["<unk>"])
-
     return vocab_src, vocab_tgt
 
 

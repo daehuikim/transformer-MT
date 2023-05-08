@@ -71,24 +71,29 @@ def create_dataloaders(
     device,
     vocab_src,
     vocab_tgt,
-    spacy_de,
-    spacy_en,
+    src,
+    tgt,
     batch_size=12000,
     max_padding=128,
     is_distributed=True,
 ):
+    languageDirection = 0
+    if languageDirection == 0:
+        language_pair=("en", "de")
+    elif languageDirection==1:
+        language_pair=("de", "en")
     # def create_dataloaders(batch_size=12000):
-    def tokenize_de(text):
-        return DataGen.tokenize(text, spacy_de)
+    def tokenize_src(text):
+        return DataGen.tokenize(text, src)
 
-    def tokenize_en(text):
-        return DataGen.tokenize(text, spacy_en)
+    def tokenize_tgt(text):
+        return DataGen.tokenize(text, tgt)
 
     def collate_fn(batch):
         return collate_batch(
             batch,
-            tokenize_de,
-            tokenize_en,
+            tokenize_src,
+            tokenize_tgt,
             vocab_src,
             vocab_tgt,
             device,
@@ -97,7 +102,7 @@ def create_dataloaders(
         )
 
     train_iter, valid_iter, test_iter = datasets.Multi30k(
-        language_pair=("de", "en")
+        language_pair
     )
 
     train_iter_map = to_map_style_dataset(

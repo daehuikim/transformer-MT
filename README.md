@@ -15,12 +15,13 @@ torchtext=0.15.0
 ## test data
 
 
-|Source text|Targer text|
-|------|---|
-|[de_core_news_sm](https://spacy.io/models/de)|[en_core_web_sm](https://spacy.io/models/en)|
+|Trial|Source text|Targer text|Language Pair|
+|----|------|---|-----|
+|1|[de_core_news_sm](https://spacy.io/models/de)|[en_core_web_sm](https://spacy.io/models/en)|DE => EN|
+|2|[en_core_web_sm](https://spacy.io/models/en)|[de_core_news_sm](https://spacy.io/models/de)| EN => DE|
 
 
-## result
+## result 1
 
 Example 0 
 ```
@@ -52,4 +53,40 @@ Example 4
 Source Text (Input)        : `<s>` Männer in blauer Spielkleidung sitzen in einem Bus . `</s>`
 Target Text (Ground Truth) : `<s>` Men wearing blue uniforms sit on a bus . `</s>`
 Model Output               : `<s>` Men in a blue uniform sitting on a bus . `</s>`
+```
+
+## result 2
+Example 0 ========
+```
+Source Text (Input)        : <s> A woman with black hair , wearing a black top and a red skirt is shaking her fist at somebody . </s>
+Target Text (Ground Truth) : <s> Eine Frau mit schwarzem Haar , schwarzem Oberteil und einem roten Rock <unk> jemandem mit der Faust . </s>
+Model Output               : <s> Eine Frau mit schwarzen Haaren , schwarzem Oberteil und einem roten Rock schüttelt sich die Schulter eines <unk> . </s>
+```
+```
+Example 1 ========
+
+Source Text (Input)        : <s> Two dogs run in a field looking at an unseen Frisbee . </s>
+Target Text (Ground Truth) : <s> Zwei Hunde rennen über ein Feld und blicken dabei auf eine <unk> Frisbeescheibe . </s>
+Model Output               : <s> Zwei Hunde laufen auf einem Feld und werden eine <unk> Frisbee - Frisbee zu . </s>
+```
+```
+Example 2 ========
+
+Source Text (Input)        : <s> A group of men , women , and children , all wearing hats , talk on the beach . </s>
+Target Text (Ground Truth) : <s> Eine Gruppe von Männern , Frauen und Kindern , die alle Hüte tragen , unterhält sich am Strand . </s>
+Model Output               : <s> Eine Gruppe von Männern , Frauen , Kinder und Kindern , die Hüte tragen , reden am Strand . </s>
+```
+```
+Example 3 ========
+
+Source Text (Input)        : <s> A man in an army uniform speaks into a microphone . </s>
+Target Text (Ground Truth) : <s> Ein Mann in einer Armeeuniform spricht in ein Mikrofon . </s>
+Model Output               : <s> Ein Mann in einem <unk> spricht in ein Mikrofon . </s>
+```
+```
+Example 4 ========
+
+Source Text (Input)        : <s> A man wearing headphones walks past a wall with red and purple graffiti . </s>
+Target Text (Ground Truth) : <s> Ein Mann mit Kopfhörern geht an einer Mauer mit rotem und lilafarbenem Graffiti vorbei . </s>
+Model Output               : <s> Ein Mann mit Kopfhörern geht an einer Wand mit roten und lila Graffiti vorbei . </s>
 ```
