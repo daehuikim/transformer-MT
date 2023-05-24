@@ -6,7 +6,6 @@ import torch
 import spacy
 
 def load_tokenizers():
-    
     languageDirection = 0
     if languageDirection == 0:
         source = "en_core_web_sm"

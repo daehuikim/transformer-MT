@@ -90,3 +90,13 @@ Source Text (Input)        : <s> A man wearing headphones walks past a wall with
 Target Text (Ground Truth) : <s> Ein Mann mit Kopfhörern geht an einer Mauer mit rotem und lilafarbenem Graffiti vorbei . </s>
 Model Output               : <s> Ein Mann mit Kopfhörern geht an einer Wand mit roten und lila Graffiti vorbei . </s>
 ```
+
+# ASR model
+use well fine-tuned model
+english speech to text
+
+# Speech translation model
+Load Speech Data(English) => ASR model => English text => MT model => Deutsch
+2way
+1. English speech(for ASR model) + pre-trained MT model
+2. Speech dataset(for ASR model & MT model)
