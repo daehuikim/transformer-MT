@@ -51,6 +51,9 @@ def build_vocabulary(src, tgt):
 
     print("Building Source Vocabulary ...")
     train, val, test = datasets.Multi30k(language_pair)
+    print("train:",train)
+    print("val:",val)
+    print("test:",test)
     vocab_src = build_vocab_from_iterator(
         yield_tokens(train + val + test, tokenize_src, index=0),
         min_freq=2,
