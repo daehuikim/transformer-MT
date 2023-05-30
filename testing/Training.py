@@ -129,7 +129,7 @@ def train_model(vocab_src, vocab_tgt, src, tgt, config):
         )
     else:
         train_worker(
-            1, 1, vocab_src, vocab_tgt, src, tgt, config, False
+            0, 1, vocab_src, vocab_tgt, src, tgt, config, False
         )
 
 

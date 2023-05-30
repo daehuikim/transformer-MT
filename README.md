@@ -100,3 +100,7 @@ Load Speech Data(English) => ASR model => English text => MT model => Deutsch
 2way
 1. English speech(for ASR model) + pre-trained MT model
 2. Speech dataset(for ASR model & MT model)
+## result
+```
+BLEU Score: {'bleu': 0.0835311569390731, 'precisions': [0.38508206939538747, 0.13730770079678636, 0.05029391018104867, 0.018307556896768516], 'brevity_penalty': 1.0, 'length_ratio': 1.1139940746227202, 'translation_length': 48129, 'reference_length': 43204}
+```

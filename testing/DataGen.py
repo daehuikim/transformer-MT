@@ -27,7 +27,7 @@ def load_tokenizers():
         tgt = spacy.load(target)
 
     return src, tgt
-
+    
 def tokenize(text, tokenizer):
     return [tok.text for tok in tokenizer.tokenizer(text)]
 
@@ -37,12 +37,6 @@ def yield_tokens(data_iter, tokenizer, index):
         yield tokenizer(from_to_tuple[index])
 
 def build_vocabulary(src, tgt):
-    languageDirection = 0
-    if languageDirection == 0:
-        language_pair=("en", "de")
-    elif languageDirection==1:
-        language_pair=("de", "en")
-    
     def tokenize_src(text):
         return tokenize(text, src)
 
@@ -50,10 +44,7 @@ def build_vocabulary(src, tgt):
         return tokenize(text, tgt)
 
     print("Building Source Vocabulary ...")
-    train, val, test = datasets.Multi30k(language_pair)
-    print("train:",train)
-    print("val:",val)
-    print("test:",test)
+    train, val, test = datasets.Multi30k(language_pair=("en","de"))
     vocab_src = build_vocab_from_iterator(
         yield_tokens(train + val + test, tokenize_src, index=0),
         min_freq=2,
@@ -61,7 +52,7 @@ def build_vocabulary(src, tgt):
     )
 
     print("Building Target Vocabulary ...")
-    train, val, test = datasets.Multi30k(language_pair)
+    train, val, test = datasets.Multi30k(language_pair=("en","de"))
     vocab_tgt = build_vocab_from_iterator(
         yield_tokens(train + val + test, tokenize_tgt, index=1),
         min_freq=2,
@@ -79,7 +70,7 @@ def load_vocab(src, tgt):
         torch.save((vocab_src, vocab_tgt), "vocab.pt")
     else:
         vocab_src, vocab_tgt = torch.load("vocab.pt")
-    print("Finished.\nVocabulary sizes:")
+    print("Successfully Loading Finished.\nVocabulary sizes:")
     print(len(vocab_src))
     print(len(vocab_tgt))
     return vocab_src, vocab_tgt

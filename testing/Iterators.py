@@ -2,7 +2,7 @@ import torch
 from torchtext.data.functional import to_map_style_dataset
 from torch.nn.functional import pad
 import torchtext.datasets as datasets
-from .  import DataGen
+from .  import DataGen,LocalData
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
@@ -77,11 +77,7 @@ def create_dataloaders(
     max_padding=128,
     is_distributed=True,
 ):
-    languageDirection = 0
-    if languageDirection == 0:
-        language_pair=("en", "de")
-    elif languageDirection==1:
-        language_pair=("de", "en")
+
     # def create_dataloaders(batch_size=12000):
     def tokenize_src(text):
         return DataGen.tokenize(text, src)
@@ -102,7 +98,7 @@ def create_dataloaders(
         )
 
     train_iter, valid_iter, test_iter = datasets.Multi30k(
-        language_pair
+        language_pair=("en", "de")
     )
 
     train_iter_map = to_map_style_dataset(
@@ -131,3 +127,4 @@ def create_dataloaders(
         collate_fn=collate_fn,
     )
     return train_dataloader, valid_dataloader
+

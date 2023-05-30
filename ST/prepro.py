@@ -20,6 +20,7 @@ def load_wav_dataset(directory, chunk_duration = 60):
     #load source utterances
     for audio_path in audio_paths:
         audio_filename = audio_path.stem+".wav"
+        print(audio_filename)
         waveform, sample_rate = torchaudio.load(audio_path)
         total_duration = waveform.shape[1] / sample_rate
         chunk_samples = int(sample_rate * chunk_duration)
@@ -91,6 +92,6 @@ def preprocess_dataset(dataset_dir, output_dir):
 
 
 #Preprocess the dataset
-dataset_dir = './tst-COMMON-copy'
+dataset_dir = './tst-COMMON'
 output_dir = './ST-output'
 preprocess_dataset(dataset_dir, output_dir)
