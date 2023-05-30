@@ -2,13 +2,13 @@ from testing import Training, test
 import evaluate
 
 model = Training.load_trained_model()
-input_file = "prediction.txt"
-output_file = "output.txt"
+input_file = "en_grth.txt"
+output_file = "output_test.txt"
 model_file = "Helsinki-NLP/opus-mt-en-de"
 test.generate_inference(input_file,output_file,model_file)
 
 # Read the content from prediction.txt and groundtruth.txt
-with open("output.txt", "r", encoding="utf-8") as f:
+with open("output_test.txt", "r", encoding="utf-8") as f:
     prediction = f.readlines()
 
 with open("grth.txt", "r", encoding="utf-8") as f:

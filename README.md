@@ -4,7 +4,7 @@ MT model implemented by pytorch
 ## environment
 
 ```
-pytion=3.10
+python=3.10
 pytorch=2.0.0
 pytorch-cuda=11.7
 spacy=3.3.1
@@ -102,5 +102,5 @@ Load Speech Data(English) => ASR model => English text => MT model => Deutsch
 2. Speech dataset(for ASR model & MT model)
 ## result
 ```
-BLEU Score: {'bleu': 0.0835311569390731, 'precisions': [0.38508206939538747, 0.13730770079678636, 0.05029391018104867, 0.018307556896768516], 'brevity_penalty': 1.0, 'length_ratio': 1.1139940746227202, 'translation_length': 48129, 'reference_length': 43204}
+BLEU Score: {'bleu': 0.22427557431167885, 'precisions': [0.5515894452524414, 0.2970181208201823, 0.18001410768869033, 0.11366779831510122], 'brevity_penalty': 0.9320651213260389, 'length_ratio': 0.9342715713869747, 'translation_length': 48129, 'reference_length': 51515}
 ```
